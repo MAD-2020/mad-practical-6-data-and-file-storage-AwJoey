@@ -28,10 +28,33 @@ public class Main3Activity extends AppCompatActivity {
     private static final String FILENAME = "Main3Activity.java";
     private static final String TAG = "Whack-A-Mole3.0!";
 
+    Button backToLogin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3);
+
+        backToLogin = findViewById(R.id.BackToLoginButton);
+
+        MyDBHandler dbHandler = new MyDBHandler(this, null, null, 1);
+        Intent intent = getIntent();
+        String userName = intent.getStringExtra("username");
+        UserData userData = dbHandler.findUser(userName);
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        CustomScoreAdaptor adapter = new CustomScoreAdaptor(userData);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(layoutManager);
+        Log.v(TAG, FILENAME + ": Show level for User: "+ userName);
+
+        backToLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent2 = new Intent(Main3Activity.this, MainActivity.class);
+                startActivity(intent2);
+            }
+        });
         /* Hint:
         This method receives the username account data and looks up the database for find the
         corresponding information to display in the recyclerView for the level selections page.
